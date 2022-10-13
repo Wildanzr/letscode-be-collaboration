@@ -33,7 +33,7 @@ const io = require('socket.io')(server, {
   }
 })
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   console.log(`Client connected [id=${socket.id}]`)
 
   // Disconnect

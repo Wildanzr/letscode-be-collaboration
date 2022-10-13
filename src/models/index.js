@@ -7,5 +7,6 @@ module.exports = {
   ...require('./testCases'),
   ...require('./sampleCases'),
   ...require('./learn'),
-  ...require('./challenge')
+  ...require('./challenge'),
+  ...require('./collaboration')
 }
