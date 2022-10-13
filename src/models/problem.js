@@ -1,14 +1,6 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
-const nanoid = require('nanoid')
-
-const {
-  userSchema,
-  durationSchema,
-  testCasesSchema,
-  sampleCasesSchema,
-  participantSchema
-} = require('./index')
+const { nanoid } = require('nanoid')
 
 const problemSchema = new Schema({
   _id: {
@@ -16,17 +8,17 @@ const problemSchema = new Schema({
     default: `pbl-${nanoid(15)}`
   },
   title: { type: String, required: true, unique: true, minlength: 3 },
-  challenger: userSchema,
+  challenger: { type: Schema.Types.String, ref: 'users' },
   description: { type: String, required: true },
   constraint: { type: String, required: true },
   point: { type: Number, required: true },
   inputFormat: { type: String, required: true },
   outputFormat: { type: String, required: true },
-  sampleCases: [sampleCasesSchema],
-  testCases: [testCasesSchema],
-  duration: durationSchema,
+  sampleCases: { type: Schema.Types.String, ref: 'sampleCases' },
+  testCases: { type: Schema.Types.String, ref: 'testCases' },
+  duration: { type: Schema.Types.String, ref: 'durations' },
   languageAllowed: { type: Array, required: true },
-  participants: [participantSchema]
+  participants: { type: Schema.Types.String, ref: 'participants' }
 })
 
 // Create model

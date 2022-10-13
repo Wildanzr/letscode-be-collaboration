@@ -1,15 +1,13 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
-const nanoid = require('nanoid')
-
-const { problemSchema } = require('./index')
+const { nanoid } = require('nanoid')
 
 const learnSchema = new Schema({
   _id: {
     type: String,
     default: `lrn-${nanoid(15)}`
   },
-  problemId: problemSchema,
+  problemId: { type: Schema.Types.String, ref: 'problems' },
   stage: { type: String, required: true }
 })
 

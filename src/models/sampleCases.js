@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
-const nanoid = require('nanoid')
+const { nanoid } = require('nanoid')
 
 const sampleCasesSchema = new Schema({
   _id: {

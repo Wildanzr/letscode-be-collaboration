@@ -1,17 +1,15 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
-const nanoid = require('nanoid')
-
-const { userSchema, submissionSchema } = require('./index')
+const { nanoid } = require('nanoid')
 
 const participantSchema = new Schema({
   _id: {
     type: String,
     default: `pnt-${nanoid(15)}`
   },
-  userId: userSchema,
+  userId: { type: Schema.Types.String, ref: 'users' },
   currentPoint: { type: Number, required: true, default: 0 },
-  listOfSubmission: [submissionSchema]
+  listOfSubmission: { type: Array(Schema.Types.String), ref: 'submissions' }
 })
 
 // Create model
