@@ -1,5 +1,15 @@
 require('dotenv').config()
 const server = require('http').createServer()
+
+// Mongo DB
+const mongoose = require('mongoose')
+
+// Connect to mongodb
+mongoose.connect(process.env.DATABASE_URL, {
+  useNewURLParser: true,
+  useUnifiedTopology: true
+}).then(console.log('connected to db')).catch((err) => console.log(err))
+
 const io = require('socket.io')(server, {
   cors: {
     origin: '*',

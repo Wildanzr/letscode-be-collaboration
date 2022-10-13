@@ -12,6 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
+    "mongoose": "^6.6.5",
+    "nanoid": "^4.0.0",
     "nodemon": "^2.0.20",
     "redis": "^4.3.1",
     "socket.io": "^4.5.2"
