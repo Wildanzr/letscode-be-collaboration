@@ -1,12 +1,14 @@
 module.exports = {
-  ...require('./user'),
-  ...require('./problem'),
-  ...require('./submission'),
-  ...require('./participant'),
-  ...require('./duration'),
-  ...require('./testCases'),
-  ...require('./sampleCases'),
-  ...require('./learn'),
   ...require('./challenge'),
-  ...require('./collaboration')
+  ...require('./collaboration'),
+  ...require('./compete'),
+  ...require('./competeLeaderboard'),
+  ...require('./competeProblem'),
+  ...require('./log'),
+  ...require('./problem'),
+  ...require('./problemSubmission'),
+  ...require('./sampleCase'),
+  ...require('./submission'),
+  ...require('./testCase'),
+  ...require('./user')
 }

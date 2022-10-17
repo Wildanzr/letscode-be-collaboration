@@ -19,11 +19,17 @@ const cache = new Cache()
 
 const test = async () => {
   // Set a key
-  await cache.set('test', 'meong')
+  await cache.set('test', 'kcuing')
 
   // Get a key
-  const result = await cache.get('test')
+  let result = await cache.get('test')
   console.log(result)
+  try {
+    result = await cache.get('mong')
+    console.log(result)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 const io = require('socket.io')(server, {
