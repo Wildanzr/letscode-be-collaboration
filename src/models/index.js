@@ -1,5 +1,4 @@
 module.exports = {
-  ...require('./challenge'),
   ...require('./collaboration'),
   ...require('./compete'),
   ...require('./competeLeaderboard'),

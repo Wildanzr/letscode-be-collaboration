@@ -4,33 +4,32 @@ const server = require('http').createServer()
 
 // Mongo DB
 const mongoose = require('mongoose')
-
-// Cache
-const Cache = require('./src/cache')
-
-// Connect to mongodb
 mongoose.connect(process.env.DATABASE_URL, {
   useNewURLParser: true,
   useUnifiedTopology: true
 }).then(console.log('connected to db')).catch((err) => console.log(err))
 
-// Create a new cache service
+// Cache
+const { Cache } = require('./src/cache')
 const cache = new Cache()
 
-const test = async () => {
-  // Set a key
-  await cache.set('test', 'kcuing')
+// Validator
+const { Validator } = require('./src/validators')
+const validator = new Validator()
 
-  // Get a key
-  let result = await cache.get('test')
-  console.log(result)
-  try {
-    result = await cache.get('mong')
-    console.log(result)
-  } catch (error) {
-    console.log(error)
-  }
-}
+// Utils
+const { Response, Tokenize } = require('./src/utils')
+const response = new Response()
+const tokenize = new Tokenize()
+
+// Services
+const { CollaborationService, CacheService } = require('./src/services')
+const collaborationService = new CollaborationService()
+const cacheService = new CacheService(cache)
+
+// Controllers
+const { CollaborationController } = require('./src/controllers')
+const collaborationController = new CollaborationController(collaborationService, cacheService, validator, tokenize, response)
 
 const io = require('socket.io')(server, {
   cors: {
@@ -42,6 +41,27 @@ const io = require('socket.io')(server, {
 io.on('connection', async (socket) => {
   console.log(`Client connected [id=${socket.id}]`)
 
+  // Test request hello
+  socket.on('req_hello', async (payload) => {
+    console.log('Someone request hello')
+    await collaborationController.hello(payload, socket)
+  })
+
+  // MVP Room
+  socket.on('req_mvp_join', async (payload) => {
+    console.log('Someone requested to join MVP room')
+    await collaborationController.mvpJoin(payload, socket)
+  })
+
+  // MVP Code Collaboration
+  socket.on('req_mvp_code', async (payload) => {
+    // console.log('Someone requested to send code')
+    await collaborationController.mvpCode(payload, socket)
+
+    // Broadcast the comment to everyone in the same room
+    socket.to(payload.room).emit('res_mvp_code', payload)
+  })
+
   // Disconnect
   socket.on('disconnect', () => {
     console.log(`Client gone [id=${socket.id}]`)
@@ -52,5 +72,3 @@ io.on('connection', async (socket) => {
 server.listen(process.env.PORT, () => {
   console.log(`Server listening on port ${process.env.PORT}`)
 })
-
-test()
