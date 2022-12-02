@@ -1,4 +1,4 @@
-const { Collaboration } = require('../models')
+const { Collaboration, User } = require('../models')
 const { ClientError } = require('../error')
 const { customAlphabet } = require('nanoid')
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 5)
@@ -8,6 +8,7 @@ class CollaborationService {
     this.name = 'collaborationService'
   }
 
+  // Collaborations
   async createCollaboration (payload) {
     // Destructure payload
     const { userId, competeProblemId } = payload
@@ -58,7 +59,7 @@ class CollaborationService {
 
   async addNewParticipant (codeId, userId) {
     // Find collaboration
-    const collaboration = await this.getCollaborationByCodeId(codeId)
+    const collaboration = await this.getCollaborationDetailByCodeId(codeId)
 
     // Update participants
     collaboration.participants.push(userId)
@@ -67,13 +68,48 @@ class CollaborationService {
     await collaboration.save()
   }
 
-  async getCollaborationByCodeId (codeId) {
+  async getCollaborationDetailByCodeId (codeId) {
     // Find collaboration
     const collaboration = await Collaboration.findOne({ codeId })
 
     if (!collaboration) throw new ClientError('Collaboration not found', 404)
 
     return collaboration
+  }
+
+  async getCollaborationByCodeId (codeId) {
+    // Find collaboration
+    const collaboration = await Collaboration.findOne({ codeId })
+
+    if (!collaboration) throw new ClientError('Collaboration not found', 404)
+
+    // Iterate participants, if participant is guest, modify it
+    const newParticipants = []
+    for (const participant of collaboration.participants) {
+      if (participant.includes('Guest')) {
+        newParticipants.push({
+          _id: participant,
+          username: participant
+        })
+      } else {
+        const user = await this.getUserNameById(participant)
+        newParticipants.push(user)
+      }
+    }
+
+    return { ...collaboration._doc, participants: newParticipants }
+  }
+
+  // Users
+  async getUserNameById (userId) {
+    // Find user
+    const user = await User.findById(userId)
+      .select('_id username')
+      .exec()
+
+    if (!user) return { _id: userId, username: userId }
+
+    return user
   }
 }
 
