@@ -68,6 +68,11 @@ io.on('connection', async (socket) => {
     await collaborationController.joinRoom(payload, socket)
   })
 
+  socket.on('req_update_code', async (payload) => {
+    console.log('Someone requested to update code')
+    await collaborationController.updateCode(payload, socket)
+  })
+
   // Disconnect
   socket.on('disconnect', () => {
     console.log(`Client gone [id=${socket.id}]`)
