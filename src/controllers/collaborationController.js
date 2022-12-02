@@ -9,33 +9,15 @@ class CollaborationController {
     this._tokenize = tokenize
     this._response = response
 
-    this.createCollaboration = this.createCollaboration.bind(this)
-    this.hello = this.hello.bind(this)
-
+    // Old
     this.mvpJoin = this.mvpJoin.bind(this)
     this.mvpCode = this.mvpCode.bind(this)
+
+    // New
+    this.createRoom = this.createRoom.bind(this)
   }
 
-  async createCollaboration (payload, socket) {
-    try {
-      const result = 'createCollaboration'
-      return result
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  async hello (payload, socket) {
-    const { name } = payload
-
-    const result = {
-      greeting: `Hello ${name} from server`
-    }
-
-    // Send response back to client
-    socket.emit('res_hello', result)
-  }
-
+  // This will be deleted
   async mvpJoin (payload, socket) {
     // Set payload to enter room
     const { room } = payload
@@ -64,6 +46,38 @@ class CollaborationController {
       socket.broadcast.to(room).emit('res_mvp_code', payload)
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  // New Code
+  async createRoom (payload, socket) {
+    try {
+      // Validate payload
+      this._validator.validateCreateRoom(payload)
+
+      // Create collaboration
+      const collaboration = await this._collaborationService.createCollaboration(payload)
+
+      // Destructure collaboration
+      const { codeId } = collaboration
+
+      // Create starter code in cache
+      const codeData = {
+        selectedLanguage: null,
+        code: null
+      }
+
+      // Create room in cache
+      await this._cacheService.setCodeInRoom(codeId, JSON.stringify(codeData))
+
+      // Join socket room
+      socket.join(codeId)
+
+      // Emit response
+      socket.emit('res_create_room', this._response.success(201, 'Room created', collaboration))
+    } catch (error) {
+      console.log(error)
+      socket.emit('res_create_room', this._response.error(error))
     }
   }
 }

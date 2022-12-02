@@ -28,11 +28,11 @@ class Response {
     }
   }
 
-  error (res, error) {
+  error (error) {
     const { statusCode, message } = error
     const msg = message.replace(/['"]+/g, '')
 
-    return res.status(statusCode).json(this.fail(statusCode, msg))
+    return this.fail(statusCode, msg)
   }
 }
 

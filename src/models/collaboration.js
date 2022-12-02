@@ -6,12 +6,13 @@ const collaborationSchema = new Schema({
     type: String,
     default: () => { return `clb-${nanoid(15)}` }
   },
-  competeId: { type: Schema.Types.String, ref: 'competes' },
-  problemId: { type: Schema.Types.String, ref: 'problems' },
-  codeId: { type: String, required: true },
-  driver: { type: Schema.Types.String, ref: 'users' },
-  navigator: [{ type: Schema.Types.String, ref: 'users' }]
+  competeProblemId: { type: Schema.Types.String, ref: 'competeProblems' },
+  codeId: { type: String, required: true }, // Also used as room name
+  participants: [{ type: Schema.Types.String, ref: 'users' }]
 })
+
+// Index model auto delete in 2 hours
+collaborationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 7200 })
 
 // Create model
 const Collaboration = model('collaborations', collaborationSchema)

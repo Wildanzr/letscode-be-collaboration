@@ -41,12 +41,7 @@ const io = require('socket.io')(server, {
 io.on('connection', async (socket) => {
   console.log(`Client connected [id=${socket.id}]`)
 
-  // Test request hello
-  socket.on('req_hello', async (payload) => {
-    console.log('Someone request hello')
-    await collaborationController.hello(payload, socket)
-  })
-
+  // Old Code
   // MVP Room
   socket.on('req_mvp_join', async (payload) => {
     console.log('Someone requested to join MVP room')
@@ -60,6 +55,12 @@ io.on('connection', async (socket) => {
 
     // Broadcast the comment to everyone in the same room
     socket.to(payload.room).emit('res_mvp_code', payload)
+  })
+
+  // New Code
+  socket.on('req_create_room', async (payload) => {
+    console.log('Someone requested to create room')
+    await collaborationController.createRoom(payload, socket)
   })
 
   // Disconnect
