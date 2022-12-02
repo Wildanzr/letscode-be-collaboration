@@ -99,11 +99,23 @@ class CollaborationController {
       // Join socket room
       socket.join(roomId)
 
+      // Get collaboration details
+      const collaboration = await this._collaborationService.getCollaborationByCodeId(roomId)
+
+      // Broadcast to existing participants
+      socket.broadcast.to(roomId).emit('res_update_participants', this._response.success(200, 'New participant joined', collaboration))
+
       // Get code from cache
       const codeData = await this._cacheService.getCodeInRoom(roomId)
 
+      // Create response
+      const response = {
+        collaboration,
+        codeData: JSON.parse(codeData)
+      }
+
       // Emit response
-      socket.emit('res_join_room', this._response.success(200, 'Room joined', JSON.parse(codeData)))
+      socket.emit('res_join_room', this._response.success(200, 'Room joined', response))
     } catch (error) {
       console.log(error)
       socket.emit('res_join_room', this._response.error(error))

@@ -28,8 +28,6 @@ class CacheService {
 
   // Product start from here
   async setCodeInRoom (room, code) {
-    console.log(room)
-    console.log(code)
     try {
       await this._cache.set(room, code)
     } catch (error) {

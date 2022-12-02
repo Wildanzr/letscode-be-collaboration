@@ -1,6 +1,7 @@
 const { Collaboration } = require('../models')
 const { ClientError } = require('../error')
-const { nanoid } = require('nanoid')
+const { customAlphabet } = require('nanoid')
+const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 5)
 
 class CollaborationService {
   constructor () {
@@ -10,6 +11,9 @@ class CollaborationService {
   async createCollaboration (payload) {
     // Destructure payload
     const { userId, competeProblemId } = payload
+
+    // Determine userId is guest or not
+    const isGuest = userId.includes('Guest')
 
     // Generate random room name
     const codeId = nanoid(5)
@@ -22,7 +26,25 @@ class CollaborationService {
     }
 
     // Create collaboration
-    return await Collaboration.create(collaboration)
+    let collab = await Collaboration.create(collaboration)
+    if (!collab) throw new ClientError('Failed to create collaboration', 500)
+
+    // If userId is guest, then return it
+    if (isGuest) {
+      console.log('Guest')
+      const participants = [{
+        _id: userId,
+        username: userId
+      }]
+
+      return { ...collab._doc, participants }
+    } else {
+      console.log('here')
+      // Populate participants, select username and _id
+      collab = await collab.populate('participants', 'username')
+
+      return collab
+    }
   }
 
   async checkCollaborationIsExistByCodeId (codeId) {
