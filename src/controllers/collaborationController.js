@@ -93,8 +93,25 @@ class CollaborationController {
       const { roomId } = payload
       await this._collaborationService.checkCollaborationIsExistByCodeId(roomId)
 
-      // Update participants
+      // Leave at another room
       const { userId } = payload
+      const otherRooms = await this._collaborationService.getCollaborationByUserId(userId)
+      for (const otherRoom of otherRooms) {
+        // Update participants
+        const { codeId } = otherRoom
+        await this._collaborationService.removeParticipant(codeId, userId)
+
+        // Leave socket room
+        socket.leave(codeId)
+
+        // Get collaboration details
+        const collaboration = await this._collaborationService.getCollaborationByCodeId(codeId)
+
+        // Broadcast to existing participants
+        socket.broadcast.to(codeId).emit('res_participants_left', this._response.success(200, 'Participant left', collaboration))
+      }
+
+      // Update participants
       await this._collaborationService.addNewParticipant(roomId, userId)
 
       // Join socket room

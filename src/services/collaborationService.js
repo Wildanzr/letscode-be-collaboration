@@ -32,7 +32,6 @@ class CollaborationService {
 
     // If userId is guest, then return it
     if (isGuest) {
-      console.log('Guest')
       const participants = [{
         _id: userId,
         username: userId
@@ -40,7 +39,6 @@ class CollaborationService {
 
       return { ...collab._doc, participants }
     } else {
-      console.log('here')
       // Populate participants, select username and _id
       collab = await collab.populate('participants', 'username')
 
@@ -109,6 +107,10 @@ class CollaborationService {
     }
 
     return { ...collaboration._doc, participants: newParticipants }
+  }
+
+  async getCollaborationByUserId (userId) {
+    return await Collaboration.find({ participants: { $in: [userId] } }).select('codeId').exec()
   }
 
   // Users
