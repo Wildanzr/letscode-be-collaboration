@@ -1,5 +1,5 @@
 const { ClientError } = require('../error')
-const { createRoomSchema } = require('./schema')
+const { createRoomSchema, joinRoomSchema } = require('./schema')
 
 class Validator {
   constructor () {
@@ -8,6 +8,11 @@ class Validator {
 
   async validateCreateRoom (payload) {
     const { error } = createRoomSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  async validateJoinRoom (payload) {
+    const { error } = joinRoomSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

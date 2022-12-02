@@ -15,6 +15,7 @@ class CollaborationController {
 
     // New
     this.createRoom = this.createRoom.bind(this)
+    this.joinRoom = this.joinRoom.bind(this)
   }
 
   // This will be deleted
@@ -78,6 +79,33 @@ class CollaborationController {
     } catch (error) {
       console.log(error)
       socket.emit('res_create_room', this._response.error(error))
+    }
+  }
+
+  async joinRoom (payload, socket) {
+    try {
+      // Validate payload
+      this._validator.validateJoinRoom(payload)
+
+      // Check if room exists
+      const { roomId } = payload
+      await this._collaborationService.checkCollaborationIsExistByCodeId(roomId)
+
+      // Update participants
+      const { userId } = payload
+      await this._collaborationService.addNewParticipant(roomId, userId)
+
+      // Join socket room
+      socket.join(roomId)
+
+      // Get code from cache
+      const codeData = await this._cacheService.getCodeInRoom(roomId)
+
+      // Emit response
+      socket.emit('res_join_room', this._response.success(200, 'Room joined', JSON.parse(codeData)))
+    } catch (error) {
+      console.log(error)
+      socket.emit('res_join_room', this._response.error(error))
     }
   }
 }

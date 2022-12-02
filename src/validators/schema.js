@@ -5,6 +5,12 @@ const createRoomSchema = Joi.object({
   competeProblemId: Joi.string().required()
 })
 
+const joinRoomSchema = Joi.object({
+  userId: Joi.string().required(),
+  roomId: Joi.string().required()
+})
+
 module.exports = {
-  createRoomSchema
+  createRoomSchema,
+  joinRoomSchema
 }

@@ -63,6 +63,11 @@ io.on('connection', async (socket) => {
     await collaborationController.createRoom(payload, socket)
   })
 
+  socket.on('req_join_room', async (payload) => {
+    console.log('Someone requested to join room')
+    await collaborationController.joinRoom(payload, socket)
+  })
+
   // Disconnect
   socket.on('disconnect', () => {
     console.log(`Client gone [id=${socket.id}]`)

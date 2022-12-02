@@ -14,6 +14,9 @@ const collaborationSchema = new Schema({
 // Index model auto delete in 2 hours
 collaborationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 7200 })
 
+// Add index to codeId for faster query
+collaborationSchema.index({ codeId: 1 })
+
 // Create model
 const Collaboration = model('collaborations', collaborationSchema)
 
