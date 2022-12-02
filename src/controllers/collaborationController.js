@@ -17,6 +17,7 @@ class CollaborationController {
     this.createRoom = this.createRoom.bind(this)
     this.joinRoom = this.joinRoom.bind(this)
     this.updateCode = this.updateCode.bind(this)
+    this.leaveRoom = this.leaveRoom.bind(this)
   }
 
   // This will be deleted
@@ -119,6 +120,36 @@ class CollaborationController {
     } catch (error) {
       console.log(error)
       socket.emit('res_join_room', this._response.error(error))
+    }
+  }
+
+  async leaveRoom (payload, socket) {
+    try {
+      // Validate payload
+      this._validator.validateLeaveRoom(payload)
+
+      // Check if room exists
+      const { roomId } = payload
+      await this._collaborationService.checkCollaborationIsExistByCodeId(roomId)
+
+      // Update participants
+      const { userId } = payload
+      await this._collaborationService.removeParticipant(roomId, userId)
+
+      // Leave socket room
+      socket.leave(roomId)
+
+      // Get collaboration details
+      const collaboration = await this._collaborationService.getCollaborationByCodeId(roomId)
+
+      // Broadcast to existing participants
+      socket.broadcast.to(roomId).emit('res_participants_left', this._response.success(200, 'Participant left', collaboration))
+
+      // Emit response
+      socket.emit('res_leave_room', this._response.success(200, 'Room left', collaboration))
+    } catch (error) {
+      console.log(error)
+      socket.emit('res_leave_room', this._response.error(error))
     }
   }
 

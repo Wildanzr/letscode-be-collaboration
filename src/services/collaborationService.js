@@ -68,6 +68,17 @@ class CollaborationService {
     await collaboration.save()
   }
 
+  async removeParticipant (codeId, userId) {
+    // Find collaboration
+    const collaboration = await this.getCollaborationDetailByCodeId(codeId)
+
+    // Remove participant
+    collaboration.participants = collaboration.participants.filter(participant => participant !== userId)
+
+    // Save collaboration
+    await collaboration.save()
+  }
+
   async getCollaborationDetailByCodeId (codeId) {
     // Find collaboration
     const collaboration = await Collaboration.findOne({ codeId })

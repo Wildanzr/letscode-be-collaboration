@@ -16,8 +16,14 @@ const updateCodeSchema = Joi.object({
   code: Joi.string().required()
 })
 
+const leaveRoomSchema = Joi.object({
+  userId: Joi.string().required(),
+  roomId: Joi.string().required()
+})
+
 module.exports = {
   createRoomSchema,
   joinRoomSchema,
-  updateCodeSchema
+  updateCodeSchema,
+  leaveRoomSchema
 }

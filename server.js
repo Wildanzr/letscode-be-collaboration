@@ -73,6 +73,11 @@ io.on('connection', async (socket) => {
     await collaborationController.updateCode(payload, socket)
   })
 
+  socket.on('req_leave_room', async (payload) => {
+    console.log('Someone requested to leave room')
+    await collaborationController.leaveRoom(payload, socket)
+  })
+
   // Disconnect
   socket.on('disconnect', () => {
     console.log(`Client gone [id=${socket.id}]`)
