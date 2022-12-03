@@ -59,28 +59,29 @@ io.on('connection', async (socket) => {
 
   // New Code
   socket.on('req_create_room', async (payload) => {
-    console.log('Someone requested to create room')
     await collaborationController.createRoom(payload, socket)
   })
 
   socket.on('req_join_room', async (payload) => {
-    console.log('Someone requested to join room')
     await collaborationController.joinRoom(payload, socket)
   })
 
   socket.on('req_update_code', async (payload) => {
-    console.log('Someone requested to update code')
     await collaborationController.updateCode(payload, socket)
   })
 
+  socket.on('req_save_code', async (payload) => {
+    console.log('Someone requested to save code')
+    // await collaborationController.saveCode(payload, socket)
+  })
+
   socket.on('req_leave_room', async (payload) => {
-    console.log('Someone requested to leave room')
     await collaborationController.leaveRoom(payload, socket)
   })
 
   // Disconnect
   socket.on('disconnect', async () => {
-    console.log(`Client gone [id=${socket.id}]`)
+    console.log(`Client disconnected [id=${socket.id}]`)
     await collaborationController.forceLeaveRoom(socket)
   })
 })

@@ -12,8 +12,8 @@ const joinRoomSchema = Joi.object({
 
 const updateCodeSchema = Joi.object({
   roomId: Joi.string().required(),
-  selectedLanguage: Joi.number().required(),
-  code: Joi.string().required()
+  selectedLanguage: Joi.number().allow(null).required(),
+  code: Joi.string().allow('').required()
 })
 
 const leaveRoomSchema = Joi.object({
