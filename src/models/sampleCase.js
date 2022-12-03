@@ -1,21 +1,20 @@
-const mongoose = require('mongoose')
-const { Schema } = mongoose
+const { model, Schema } = require('mongoose')
 const { nanoid } = require('nanoid')
 
 const sampleCasesSchema = new Schema({
   _id: {
     type: String,
-    default: `sc-${nanoid(15)}`
+    default: () => { return `sc-${nanoid(15)}` }
   },
   input: { type: String, required: true },
   output: { type: String, required: true },
-  explanation: { type: String, default: '' }
+  explanation: { type: String, default: null }
 })
 
 // Create model
-const SampleCases = mongoose.model('sampleCases', sampleCasesSchema)
+const SampleCase = model('sampleCases', sampleCasesSchema)
 
 module.exports = {
-  SampleCases,
+  SampleCase,
   sampleCasesSchema
 }

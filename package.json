@@ -12,11 +12,13 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
+    "joi": "^17.6.3",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.5",
     "nanoid": "^3.3.4",
     "nodemon": "^2.0.20",
     "redis": "^4.3.1",
-    "socket.io": "^4.5.2"
+    "socket.io": "^4.5.3"
   },
   "devDependencies": {
     "eslint": "^8.25.0",
