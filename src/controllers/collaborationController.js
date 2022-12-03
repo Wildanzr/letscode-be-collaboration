@@ -73,6 +73,10 @@ class CollaborationController {
       // Create room in cache
       await this._cacheService.setCodeInRoom(codeId, JSON.stringify(codeData))
 
+      // Save socket.id with userId in cache
+      const { userId } = payload
+      await this._cacheService.saveUserId(socket.id, JSON.stringify(userId))
+
       // Join socket room
       socket.join(codeId)
 
@@ -193,6 +197,32 @@ class CollaborationController {
     } catch (error) {
       console.log(error)
       socket.emit('res_update_code', this._response.error(error))
+    }
+  }
+
+  async forceLeaveRoom (socket) {
+    try {
+      // Get user id
+      const userId = await this._cacheService.getUserId(socket.id)
+
+      // Leave at another room
+      const otherRooms = await this._collaborationService.getCollaborationByUserId(userId)
+      for (const otherRoom of otherRooms) {
+        // Update participants
+        const { codeId } = otherRoom
+        await this._collaborationService.removeParticipant(codeId, userId)
+
+        // Leave socket room
+        socket.leave(codeId)
+
+        // Get collaboration details
+        const collaboration = await this._collaborationService.getCollaborationByCodeId(codeId)
+
+        // Broadcast to existing participants
+        socket.broadcast.to(codeId).emit('res_participants_left', this._response.success(200, 'Participant left', collaboration))
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 }

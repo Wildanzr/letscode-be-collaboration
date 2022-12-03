@@ -45,6 +45,25 @@ class CacheService {
       throw new ClientError(error.message, 400)
     }
   }
+
+  async saveUserId (socketId, userId) {
+    try {
+      await this._cache.set(socketId, userId)
+    } catch (error) {
+      console.log(error)
+      throw new ClientError(error.message, 400)
+    }
+  }
+
+  async getUserId (socketId) {
+    try {
+      const userId = await this._cache.get(socketId)
+      return JSON.parse(userId)
+    } catch (error) {
+      console.log(error)
+      throw new ClientError(error.message, 400)
+    }
+  }
 }
 
 module.exports = {

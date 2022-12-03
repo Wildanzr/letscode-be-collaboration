@@ -79,8 +79,9 @@ io.on('connection', async (socket) => {
   })
 
   // Disconnect
-  socket.on('disconnect', () => {
+  socket.on('disconnect', async () => {
     console.log(`Client gone [id=${socket.id}]`)
+    await collaborationController.forceLeaveRoom(socket)
   })
 })
 
