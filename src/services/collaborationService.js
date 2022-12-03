@@ -55,6 +55,19 @@ class CollaborationService {
     return true
   }
 
+  async checkCollaborationIsExistByCodeIdAndCPID (codeId, competeProblemId) {
+    // Find collaboration
+    const collaboration = await Collaboration.findOne({ codeId })
+
+    if (!collaboration) throw new ClientError('Collaboration not found', 404)
+
+    if (collaboration.competeProblemId !== competeProblemId) {
+      throw new ClientError('Cannot join this collaboration', 400)
+    }
+
+    return true
+  }
+
   async addNewParticipant (codeId, userId) {
     // Find collaboration
     const collaboration = await this.getCollaborationDetailByCodeId(codeId)

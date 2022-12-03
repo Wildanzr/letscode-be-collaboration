@@ -96,8 +96,8 @@ class CollaborationController {
       this._validator.validateJoinRoom(payload)
 
       // Check if room exists
-      const { roomId } = payload
-      await this._collaborationService.checkCollaborationIsExistByCodeId(roomId)
+      const { roomId, competeProblemId } = payload
+      await this._collaborationService.checkCollaborationIsExistByCodeIdAndCPID(roomId, competeProblemId)
 
       // Leave at another room
       const { userId } = payload

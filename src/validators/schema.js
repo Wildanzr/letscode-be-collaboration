@@ -7,7 +7,8 @@ const createRoomSchema = Joi.object({
 
 const joinRoomSchema = Joi.object({
   userId: Joi.string().required(),
-  roomId: Joi.string().required()
+  roomId: Joi.string().required(),
+  competeProblemId: Joi.string().required()
 })
 
 const updateCodeSchema = Joi.object({
