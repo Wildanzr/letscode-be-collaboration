@@ -46,7 +46,6 @@ class SubmissionController {
         code,
         tokens
       }
-      console.log(submission)
 
       // Send tokens to producer
       await this._producer.sendMessage('submission', submission)
