@@ -1,4 +1,6 @@
 module.exports = {
   ...require('./collaborationService'),
-  ...require('./cacheService')
+  ...require('./cacheService'),
+  ...require('./submissionService'),
+  ...require('./producer')
 }

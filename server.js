@@ -23,13 +23,16 @@ const response = new Response()
 const tokenize = new Tokenize()
 
 // Services
-const { CollaborationService, CacheService } = require('./src/services')
+const { CollaborationService, CacheService, SubmissionService, Producer } = require('./src/services')
 const collaborationService = new CollaborationService()
 const cacheService = new CacheService(cache)
+const submissionService = new SubmissionService()
+const producer = new Producer()
 
 // Controllers
-const { CollaborationController } = require('./src/controllers')
+const { CollaborationController, SubmissionController } = require('./src/controllers')
 const collaborationController = new CollaborationController(collaborationService, cacheService, validator, tokenize, response)
+const submissionController = new SubmissionController(submissionService, producer, validator, response)
 
 const io = require('socket.io')(server, {
   cors: {
@@ -41,23 +44,6 @@ const io = require('socket.io')(server, {
 io.on('connection', async (socket) => {
   console.log(`Client connected [id=${socket.id}]`)
 
-  // Old Code
-  // MVP Room
-  socket.on('req_mvp_join', async (payload) => {
-    console.log('Someone requested to join MVP room')
-    await collaborationController.mvpJoin(payload, socket)
-  })
-
-  // MVP Code Collaboration
-  socket.on('req_mvp_code', async (payload) => {
-    // console.log('Someone requested to send code')
-    await collaborationController.mvpCode(payload, socket)
-
-    // Broadcast the comment to everyone in the same room
-    socket.to(payload.room).emit('res_mvp_code', payload)
-  })
-
-  // New Code
   socket.on('req_create_room', async (payload) => {
     await collaborationController.createRoom(payload, socket)
   })
@@ -77,6 +63,14 @@ io.on('connection', async (socket) => {
 
   socket.on('req_leave_room', async (payload) => {
     await collaborationController.leaveRoom(payload, socket)
+  })
+
+  socket.on('req_run_code', async (payload) => {
+    await submissionController.runCode(payload, socket)
+  })
+
+  socket.on('req_submit_code', async (payload) => {
+    await submissionController.submitCode(payload, socket)
   })
 
   // Disconnect
