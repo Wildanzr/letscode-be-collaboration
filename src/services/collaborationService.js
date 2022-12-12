@@ -62,7 +62,7 @@ class CollaborationService {
     if (!collaboration) throw new ClientError('Collaboration not found', 404)
 
     if (collaboration.competeProblemId !== competeProblemId) {
-      throw new ClientError('Cannot join this collaboration', 400)
+      throw new ClientError('Cannot join this collaboration because problem doesnt same', 400)
     }
 
     return true
