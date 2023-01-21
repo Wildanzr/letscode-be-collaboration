@@ -9,10 +9,6 @@ mongoose.connect(process.env.DATABASE_URL, {
   useUnifiedTopology: true
 }).then(console.log('connected to db')).catch((err) => console.log(err))
 
-// Cache
-const { Cache } = require('./src/cache')
-const cache = new Cache()
-
 // Validator
 const { Validator } = require('./src/validators')
 const validator = new Validator()
@@ -23,15 +19,14 @@ const response = new Response()
 const tokenize = new Tokenize()
 
 // Services
-const { CollaborationService, CacheService, SubmissionService, Producer } = require('./src/services')
+const { CollaborationService, SubmissionService, Producer } = require('./src/services')
 const collaborationService = new CollaborationService()
-const cacheService = new CacheService(cache)
 const submissionService = new SubmissionService()
 const producer = new Producer()
 
 // Controllers
 const { CollaborationController, SubmissionController } = require('./src/controllers')
-const collaborationController = new CollaborationController(collaborationService, cacheService, validator, tokenize, response)
+const collaborationController = new CollaborationController(collaborationService, validator, tokenize, response)
 const submissionController = new SubmissionController(submissionService, producer, validator, response)
 
 const io = require('socket.io')(server, {

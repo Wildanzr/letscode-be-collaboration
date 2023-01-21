@@ -1,10 +1,9 @@
 // const { ClientError } = require('../error')
 
 class CollaborationController {
-  constructor (collaborationService, cacheService, validator, tokenize, response) {
+  constructor (collaborationService, validator, tokenize, response) {
     this.name = 'collaboration'
     this._collaborationService = collaborationService
-    this._cacheService = cacheService
     this._validator = validator
     this._tokenize = tokenize
     this._response = response
@@ -25,23 +24,8 @@ class CollaborationController {
       this._validator.validateCreateRoom(payload)
 
       // Create collaboration
-      const collaboration = await this._collaborationService.createCollaboration(payload)
-
-      // Destructure collaboration
+      const collaboration = await this._collaborationService.createCollaboration(payload, socket.id)
       const { codeId } = collaboration
-
-      // Create starter code in cache
-      const codeData = {
-        selectedLanguage: null,
-        code: null
-      }
-
-      // Create room in cache
-      await this._cacheService.setCodeInRoom(codeId, JSON.stringify(codeData))
-
-      // Save socket.id with userId in cache
-      const { userId } = payload
-      await this._cacheService.saveUserId(socket.id, JSON.stringify(userId))
 
       // Join socket room
       socket.join(codeId)

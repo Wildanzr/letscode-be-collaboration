@@ -1,4 +1,4 @@
-const { Collaboration, User } = require('../models')
+const { Collaboration, User, ActiveUser } = require('../models')
 const { ClientError } = require('../error')
 const { customAlphabet } = require('nanoid')
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 5)
@@ -9,12 +9,12 @@ class CollaborationService {
   }
 
   // Collaborations
-  async createCollaboration (payload) {
+  async createCollaboration (payload, socketId) {
     // Destructure payload
     const { userId, competeProblemId } = payload
 
     // Determine userId is guest or not
-    const isGuest = userId.includes('Guest')
+    const isGuest = !userId.includes('Guest')
 
     // Generate random room name
     const codeId = nanoid(5)
@@ -22,16 +22,18 @@ class CollaborationService {
     // Create collaboration document
     const collaboration = {
       competeProblemId,
+      language: null,
       codeId,
       participants: [userId]
     }
 
-    // Create collaboration
+    // Create collaboration and active user
+    await ActiveUser.create({ isGuest, userId, socketId })
     let collab = await Collaboration.create(collaboration)
-    if (!collab) throw new ClientError('Failed to create collaboration', 500)
+    if (!collab) throw new ClientError('Gagal membuat ruang kolaborasi', 500)
 
     // If userId is guest, then return it
-    if (isGuest) {
+    if (!isGuest) {
       const participants = [{
         _id: userId,
         username: userId
