@@ -89,19 +89,21 @@ class CollaborationController {
       await this._collaborationService.checkCollaborationIsExistByCodeId(roomId)
 
       // Update participants
-      await this._collaborationService.removeParticipant(roomId, userId)
+      const result = await this._collaborationService.removeParticipant(roomId, userId)
 
       // Leave socket room
       socket.leave(roomId)
 
-      // Get collaboration details
-      const collaboration = await this._collaborationService.getCollaborationByCodeId(roomId)
+      if (result) {
+        // Get collaboration details
+        const collaboration = await this._collaborationService.getCollaborationByCodeId(roomId)
 
-      // Broadcast to existing participants
-      socket.broadcast.to(roomId).emit('res_participants_left', this._response.success(200, 'Ada partisipan keluar', collaboration))
+        // Broadcast to existing participants
+        socket.broadcast.to(roomId).emit('res_participants_left', this._response.success(200, 'Ada partisipan keluar', collaboration))
 
-      // Emit response
-      socket.emit('res_leave_room', this._response.success(200, 'Room left', collaboration))
+        // Emit response
+        socket.emit('res_leave_room', this._response.success(200, 'Room left', collaboration))
+      }
     } catch (error) {
       console.log(error)
       socket.emit('res_leave_room', this._response.error(error))
