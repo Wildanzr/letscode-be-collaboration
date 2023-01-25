@@ -11,15 +11,18 @@ const joinRoomSchema = Joi.object({
   competeProblemId: Joi.string().required()
 })
 
-const updateCodeSchema = Joi.object({
-  roomId: Joi.string().required(),
-  selectedLanguage: Joi.number().allow(null).required(),
-  code: Joi.string().allow('').required()
+const updateLanguageSchema = Joi.object({
+  language: Joi.number().required(),
+  roomId: Joi.string().required()
+})
+
+const fetchParticipantsSchema = Joi.object({
+  roomId: Joi.string().required()
 })
 
 const leaveRoomSchema = Joi.object({
   userId: Joi.string().required(),
-  roomId: Joi.string().required()
+  roomId: Joi.string().allow(null, '')
 })
 
 const submitCodeSchema = Joi.object({
@@ -41,7 +44,8 @@ const runCodeSchema = Joi.object({
 module.exports = {
   createRoomSchema,
   joinRoomSchema,
-  updateCodeSchema,
+  updateLanguageSchema,
+  fetchParticipantsSchema,
   leaveRoomSchema,
   submitCodeSchema,
   runCodeSchema

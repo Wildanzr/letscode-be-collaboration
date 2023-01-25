@@ -2,7 +2,8 @@ const { ClientError } = require('../error')
 const {
   createRoomSchema,
   joinRoomSchema,
-  updateCodeSchema,
+  updateLanguageSchema,
+  fetchParticipantsSchema,
   leaveRoomSchema,
   submitCodeSchema,
   runCodeSchema
@@ -23,8 +24,13 @@ class Validator {
     if (error) throw new ClientError(error.message, 400)
   }
 
-  validateUpdateCode (payload) {
-    const { error } = updateCodeSchema.validate(payload)
+  validateUpdateLanguage (payload) {
+    const { error } = updateLanguageSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateFetchParticipants (payload) {
+    const { error } = fetchParticipantsSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 

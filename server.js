@@ -47,13 +47,8 @@ io.on('connection', async (socket) => {
     await collaborationController.joinRoom(payload, socket)
   })
 
-  socket.on('req_update_code', async (payload) => {
-    await collaborationController.updateCode(payload, socket)
-  })
-
-  socket.on('req_save_code', async (payload) => {
-    console.log('Someone requested to save code')
-    // await collaborationController.saveCode(payload, socket)
+  socket.on('req_update_lang', async (payload) => {
+    await collaborationController.changeLanguage(payload, socket)
   })
 
   socket.on('req_leave_room', async (payload) => {

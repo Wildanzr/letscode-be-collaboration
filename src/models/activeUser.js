@@ -16,8 +16,9 @@ const activeUserSchema = new Schema({
 // Index model auto delete in 5 hours
 activeUserSchema.index({ createdAt: 1 }, { expireAfterSeconds: 18000 })
 
-// Add index to socketId for faster query
+// Add index to userId and socketId for faster query
 activeUserSchema.index({ socketId: 1 })
+activeUserSchema.index({ userId: 1 })
 
 // Create model
 const ActiveUser = model('activeUsers', activeUserSchema)
