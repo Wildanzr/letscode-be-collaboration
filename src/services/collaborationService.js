@@ -133,7 +133,7 @@ class CollaborationService {
     // Find collaboration
     const collaboration = await Collaboration.findOne({ codeId })
 
-    if (!collaboration) throw new ClientError('Collaboration not found', 404)
+    if (!collaboration) throw new ClientError('Ruang kolaborasi tidak ditemukan', 404)
 
     // Iterate participants, if participant is guest, modify it
     const newParticipants = []

@@ -37,7 +37,7 @@ class SubmissionService {
       return tokens
     } catch (error) {
       console.error(error)
-      throw new ClientError('Error submitting code', 500)
+      throw new ClientError('Terjadi kesalahan eksekusi kode program', 500)
     }
   }
 }

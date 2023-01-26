@@ -1,5 +1,3 @@
-// const { ClientError } = require('../error')
-
 class CollaborationController {
   constructor (collaborationService, validator, tokenize, response) {
     this.name = 'collaboration'
@@ -30,7 +28,7 @@ class CollaborationController {
       socket.join(codeId)
 
       // Emit response
-      socket.emit('res_create_room', this._response.success(201, 'Room created', collaboration))
+      socket.emit('res_create_room', this._response.success(201, 'Ruang kolaborasi berhasil dibuat', collaboration))
     } catch (error) {
       console.log(error)
       socket.emit('res_create_room', this._response.error(error))
@@ -102,7 +100,7 @@ class CollaborationController {
         socket.broadcast.to(roomId).emit('res_participants_left', this._response.success(200, 'Ada partisipan keluar', collaboration))
 
         // Emit response
-        socket.emit('res_leave_room', this._response.success(200, 'Room left', collaboration))
+        socket.emit('res_leave_room', this._response.success(200, 'Berhasil keluar dari ruang kolaborasi', collaboration))
       }
     } catch (error) {
       console.log(error)
@@ -147,7 +145,7 @@ class CollaborationController {
           const collaboration = await this._collaborationService.getCollaborationByCodeId(codeId)
 
           // Broadcast to existing participants
-          socket.broadcast.to(codeId).emit('res_participants_left', this._response.success(200, 'Participant left', collaboration))
+          socket.broadcast.to(codeId).emit('res_participants_left', this._response.success(200, 'Ada partisipan keluar', collaboration))
         }
       }
     } catch (error) {

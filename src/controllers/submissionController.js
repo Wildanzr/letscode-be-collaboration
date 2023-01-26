@@ -22,7 +22,7 @@ class SubmissionController {
 
       // Return response
       const { type, mode } = payload
-      socket.emit('res_run_code', this._response.success(200, 'Run code success, wait for judging', { tokens, type, mode }))
+      socket.emit('res_run_code', this._response.success(200, 'Berhasil menjalankan kode, menunggu hasil penilaian', { tokens, type, mode }))
     } catch (error) {
       console.log(error)
       socket.emit('res_run_code', this._response.error(error))
@@ -52,7 +52,7 @@ class SubmissionController {
 
       // Return response
       const { type, mode } = payload
-      socket.emit('res_submit_code', this._response.success(200, 'Submit code success, wait for judging', { tokens, type, mode }))
+      socket.emit('res_submit_code', this._response.success(200, 'Berhasil mengumpulkan kode, menunggu hasil penilaian', { tokens, type, mode }))
     } catch (error) {
       console.log(error)
       socket.emit('res_submit_code', this._response.error(error))
