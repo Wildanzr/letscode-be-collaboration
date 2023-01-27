@@ -1,3 +1,4 @@
 module.exports = {
-  ...require('./collaborationController')
+  ...require('./collaborationController'),
+  ...require('./submissionController')
 }
