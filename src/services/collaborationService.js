@@ -1,11 +1,13 @@
 const { Collaboration, User, ActiveUser } = require('../models')
 const { ClientError } = require('../error')
 const { customAlphabet } = require('nanoid')
-const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 5)
+const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 5)
+const nanoNum = customAlphabet('0123456789', 4)
 
 class CollaborationService {
   constructor () {
     this.name = 'collaborationService'
+    this.usedCodeId = new Set()
   }
 
   // Collaborations
@@ -17,7 +19,16 @@ class CollaborationService {
     const isGuest = !userId.includes('Guest')
 
     // Generate random room name
-    const codeId = nanoid(5)
+    let codeId = `${nanoid(5)}-${nanoNum(4)}`
+
+    // Add codeId to usedCodeId
+    this.usedCodeId.add(codeId)
+
+    // Make sure codeId is unique
+    while (this.usedCodeId.has(codeId) !== -1 && await this.makeSureNoDuplicateCollaboration(codeId)) {
+      console.log('Duplicate codeId, generate new codeId')
+      codeId = `${nanoid(5)}-${nanoNum(4)}`
+    }
 
     // Create collaboration document
     const collaboration = {
@@ -162,6 +173,12 @@ class CollaborationService {
 
   async deleteOldCollaboration (userId) {
     return await Collaboration.findOneAndDelete({ participants: { $in: [userId] } }).exec()
+  }
+
+  async makeSureNoDuplicateCollaboration (codeId) {
+    const result = await Collaboration.findOne({ codeId }).exec()
+
+    return !!result
   }
 
   // Users
