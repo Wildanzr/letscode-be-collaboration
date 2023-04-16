@@ -21,14 +21,14 @@ class CollaborationService {
     // Generate random room name
     let codeId = `${nanoid(5)}-${nanoNum(4)}`
 
-    // Add codeId to usedCodeId
-    this.usedCodeId.add(codeId)
-
     // Make sure codeId is unique
     while (this.usedCodeId.has(codeId) !== -1 && await this.makeSureNoDuplicateCollaboration(codeId)) {
       console.log('Duplicate codeId, generate new codeId')
       codeId = `${nanoid(5)}-${nanoNum(4)}`
     }
+
+    // Add codeId to usedCodeId
+    this.usedCodeId.add(codeId)
 
     // Create collaboration document
     const collaboration = {
