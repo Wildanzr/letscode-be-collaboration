@@ -1,3 +1,6 @@
+// Utils
+const { logger } = require('./src/utils/loggger')
+
 // Create Server
 require('dotenv').config()
 const server = require('http').createServer()
@@ -7,7 +10,7 @@ const mongoose = require('mongoose')
 mongoose.connect(process.env.DATABASE_URL, {
   useNewURLParser: true,
   useUnifiedTopology: true
-}).then(console.log('connected to db')).catch((err) => console.log(err))
+}).then(logger.info('connected to db')).catch((err) => logger.error(err))
 
 // Validator
 const { Validator } = require('./src/validators')
@@ -37,7 +40,7 @@ const io = require('socket.io')(server, {
 })
 
 io.on('connection', async (socket) => {
-  console.log(`Client connected [id=${socket.id}]`)
+  logger.info(`Client connected [id=${socket.id}]`)
 
   socket.on('req_create_room', async (payload) => {
     await collaborationController.createRoom(payload, socket)
@@ -65,12 +68,12 @@ io.on('connection', async (socket) => {
 
   // Disconnect
   socket.on('disconnect', async () => {
-    console.log(`Client disconnected [id=${socket.id}]`)
+    logger.info(`Client disconnected [id=${socket.id}]`)
     await collaborationController.forceLeaveRoom(socket)
   })
 })
 
 // Start server
 server.listen(process.env.PORT, () => {
-  console.log(`Server listening on port ${process.env.PORT}`)
+  logger.info(`Server listening on port ${process.env.PORT}`)
 })

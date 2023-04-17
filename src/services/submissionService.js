@@ -1,6 +1,6 @@
 const { ClientError } = require('../error')
-
 const axios = require('axios')
+const { logger } = require('../utils/loggger')
 
 class SubmissionService {
   constructor () {
@@ -36,7 +36,7 @@ class SubmissionService {
 
       return tokens
     } catch (error) {
-      console.error(error)
+      logger.error(error)
       throw new ClientError('Terjadi kesalahan eksekusi kode program', 500)
     }
   }

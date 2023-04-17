@@ -3,6 +3,7 @@ const { ClientError } = require('../error')
 const { customAlphabet } = require('nanoid')
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 5)
 const nanoNum = customAlphabet('0123456789', 4)
+const { logger } = require('../utils/loggger')
 
 class CollaborationService {
   constructor () {
@@ -21,9 +22,11 @@ class CollaborationService {
     // Generate random room name
     let codeId = `${nanoid(5)}-${nanoNum(4)}`
 
+    logger.info(this.usedCodeId.has(codeId) !== -1)
+
     // Make sure codeId is unique
     while (this.usedCodeId.has(codeId) !== -1 && await this.makeSureNoDuplicateCollaboration(codeId)) {
-      console.log('Duplicate codeId, generate new codeId')
+      logger.info('Duplicate codeId, generate new codeId')
       codeId = `${nanoid(5)}-${nanoNum(4)}`
     }
 

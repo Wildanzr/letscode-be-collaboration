@@ -1,3 +1,5 @@
+const { logger } = require('../utils/loggger')
+
 class CollaborationController {
   constructor (collaborationService, validator, tokenize, response) {
     this.name = 'collaboration'
@@ -30,7 +32,7 @@ class CollaborationController {
       // Emit response
       socket.emit('res_create_room', this._response.success(201, 'Ruang kolaborasi berhasil dibuat', collaboration))
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       socket.emit('res_create_room', this._response.error(error))
     }
   }
@@ -67,7 +69,7 @@ class CollaborationController {
       // Emit response
       socket.emit('res_join_room', this._response.success(200, 'Berhasil bergabung ruang kolaborasi', response))
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       socket.emit('res_join_room', this._response.error(error))
     }
   }
@@ -103,7 +105,7 @@ class CollaborationController {
         socket.emit('res_leave_room', this._response.success(200, 'Berhasil keluar dari ruang kolaborasi', collaboration))
       }
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       socket.emit('res_leave_room', this._response.error(error))
     }
   }
@@ -120,7 +122,7 @@ class CollaborationController {
       const { roomId } = payload
       socket.broadcast.to(roomId).emit('res_update_lang', this._response.success(200, 'Berhasil memperbarui bahasa', collaboration))
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       socket.emit('res_update_lang', this._response.error(error))
     }
   }
@@ -149,7 +151,7 @@ class CollaborationController {
         }
       }
     } catch (error) {
-      console.log(error)
+      logger.error(error)
     }
   }
 }

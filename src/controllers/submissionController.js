@@ -1,3 +1,5 @@
+const { logger } = require('../utils/loggger')
+
 class SubmissionController {
   constructor (submissionService, producer, validator, response) {
     this.name = 'SubmissionController'
@@ -24,7 +26,7 @@ class SubmissionController {
       const { type, mode } = payload
       socket.emit('res_run_code', this._response.success(200, 'Berhasil menjalankan kode, menunggu hasil penilaian', { tokens, type, mode }))
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       socket.emit('res_run_code', this._response.error(error))
     }
   }
@@ -54,7 +56,7 @@ class SubmissionController {
       const { type, mode } = payload
       socket.emit('res_submit_code', this._response.success(200, 'Berhasil mengumpulkan kode, menunggu hasil penilaian', { tokens, type, mode }))
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       socket.emit('res_submit_code', this._response.error(error))
     }
   }
