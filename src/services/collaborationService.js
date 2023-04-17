@@ -22,10 +22,8 @@ class CollaborationService {
     // Generate random room name
     let codeId = `${nanoid(5)}-${nanoNum(4)}`
 
-    logger.info(this.usedCodeId.has(codeId) !== -1)
-
     // Make sure codeId is unique
-    while (this.usedCodeId.has(codeId) !== -1 && await this.makeSureNoDuplicateCollaboration(codeId)) {
+    while (this.usedCodeId.has(codeId) && await this.makeSureNoDuplicateCollaboration(codeId)) {
       logger.info('Duplicate codeId, generate new codeId')
       codeId = `${nanoid(5)}-${nanoNum(4)}`
     }
